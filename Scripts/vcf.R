@@ -16,9 +16,6 @@ rm(list=ls())
 ##### Options #####
 options(stringsAsFactors = F)
 
-##### Set working directory #####
-setwd("/newhome/js16174/projects/ewas_catalog/data/aries/fom1/ewas/results/")
-
 ##### Libraries ####
 suppressMessages(library(data.table))
 

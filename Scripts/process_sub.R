@@ -16,8 +16,13 @@ rm(list=ls())
 ##### Options #####
 options(stringsAsFactors = F)
 
+##### Arguments #####
+args  <-  commandArgs(trailingOnly = TRUE)
+wd <- args[1] # Working directory 
+map_file <- args[2] # map file
+
 ##### Set working directory #####
-setwd("/newhome/js16174/projects/ewas_catalog/data/aries/fom1/ewas/data/")
+setwd(wd)
 
 ##### Libraries ####
 suppressMessages(library(data.table))
@@ -46,9 +51,8 @@ annotation <- annotation[,c("CpG", "Location", "Chr", "Pos", "Gene", "Type")]
 ##### Methylation data #####
 ###################################################################
 
-map <- read.delim("../../map/aries_fom1_ewas_190515.txt", header=T, sep="\t")
+map <- read.delim(map_file, header=T, sep="\t")
 files <- list.files()
-files <- files[!(grepl("Right", files) | grepl("Left", files))]
 print(length(files))
 for(i in 1:length(files)){
   data <- fread(files[i], header=T, sep="\t", data.table=F)
@@ -60,11 +64,13 @@ for(i in 1:length(files)){
   data <- data[,c("CpG", "Beta", "SE", "P")]
   data <- inner_join(data, annotation, by="CpG")
   data$Dataset <- sub(".txt", "", files[i])
-  data$Details <- "-"
+  data$Further_Details <- "-"
   data <- inner_join(data, map, by="Dataset")
   data$StudyID <- paste0("Battram-T_", gsub(" ", "_", tolower(data$Trait)))
   data <- data[,c("StudyID", "Author", "Consortium", "PMID", "Date", "Trait", "EFO", "Analysis", "Source", "Outcome", "Exposure", "Covariates", "Outcome_Units", "Exposure_Units", "Methylation_Array", "Tissue", "Further_Details", "N", "N_Cohorts", "Categories", "Age", "N_Males", "N_Females", "N_EUR", "N_EAS", "N_SAS", "N_AFR", "N_AMR", "N_OTH", "CpG", "Location", "Chr", "Pos", "Gene", "Type", "Beta", "SE", "P", "Details")]
-  write.table(data, paste0("../results/dataset_",i,"_sub.txt"), row.names=F, quote=F, sep="\t")
+  data <- data[-grep("rs", data[, "CpG"]), ]
+  na_dat <- is.na(data[,1])
+  write.table(data, paste0("Data/dataset_",i,"_sub.txt"), row.names=F, quote=F, sep="\t")
   print(paste(i,"--DONE"))
 }
 
