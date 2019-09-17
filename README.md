@@ -1,7 +1,7 @@
 
 # Process full EWAS datasets
 
-Scripts to process full EWAS datasets. The EWAS were performed in 
+Scripts to process full EWAS datasets. So far, EWAS have been performed in ARIES and using some cleaned GEO datasets that were extracted using the geograbbi package (https://github.com/yousefi138/geograbi)
 
 ## Scripts
 ### Data processing of overall file
